@@ -4,6 +4,10 @@ A springy, composable parallax-scroller for React.
 
 Demo: http://react-springy-parallax.surge.sh
 
+Simple example: http://react-springy-parallax-simple.surge.sh
+
+Example source: https://github.com/drcmda/react-springy-parallax/blob/master/example/index.js
+
     npm install react-springy-parallax --save
     
 How to use
