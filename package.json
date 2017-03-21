@@ -1,0 +1,32 @@
+{
+  "name": "react-springy-parallax",
+  "version": "1.0.0",
+  "description": "composeable springy parallax",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel index.js --out-file dist.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drcmda/react-springy-parallax.git"
+  },
+  "keywords": [
+    "parallax",
+    "spring"
+  ],
+  "author": "Paul Henschel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/drcmda/react-springy-parallax/issues"
+  },
+  "homepage": "https://github.com/drcmda/react-springy-parallax#readme",
+  "devDependencies": {
+    "animated": "^0.2.0",
+    "babel-cli": "^6.24.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
+  }
+}
