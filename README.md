@@ -2,7 +2,7 @@ A springy, composable parallax-scroller for React.
 
 ![intro](intro.gif)
 
-Demo: react-springy-parallax.surge.sh
+Demo: http://react-springy-parallax.surge.sh
 
     npm install react-springy-parallax --save
 
