@@ -13,6 +13,8 @@ Example source: https://github.com/drcmda/react-springy-parallax/blob/master/exa
 How to use
 
 ```js
+import Parallax from 'react-springy-parallax'
+    
 // Pages determines the total height of the inner content container
 // Each page takes 100% height of the visible container by default
 <Parallax ref="parallax" pages={3}>
