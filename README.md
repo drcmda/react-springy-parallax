@@ -1,6 +1,6 @@
 A springy, composable parallax-scroller for React.
 
-![intro](intro.png)
+![intro](intro.gif)
 
 Demo: react-springy-parallax.surge.sh
 
