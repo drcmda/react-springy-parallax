@@ -4,7 +4,6 @@ import Parallax from 'react-springy-parallax'
 export default class extends React.Component {
     render() {
         const styles = {
-            whiteSpace: 'pre',
             fontFamily: 'Menlo-Regular, Menlo, monospace',
             fontSize: 14,
             lineHeight: '10px',
