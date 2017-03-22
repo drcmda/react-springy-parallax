@@ -2,7 +2,13 @@ import React from 'react'
 import Animated from 'animated/lib/targets/react-dom'
 
 export default class extends React.Component {
-    static propTypes = { pages: React.PropTypes.number.isRequired }
+    static propTypes = {
+        pages: React.PropTypes.number.isRequired,
+        effect: React.PropTypes.func
+    }
+    static defaultProps = {
+        effect: (animation, toValue) => Animated.spring(animation, { toValue })
+    }
     static childContextTypes = { parallax: React.PropTypes.object }
 
     constructor(props) {
@@ -44,7 +50,7 @@ export default class extends React.Component {
         const target = this.refs.container
         this.animatedScroll = new Animated.Value(target.scrollTop)
         this.animatedScroll.addListener(({ value }) => target.scrollTop = value)
-        Animated.spring(this.animatedScroll, { toValue: offset * this.height }).start()
+        this.props.effect(this.animatedScroll, offset * this.height).start()
     }
 
     getChildContext() {
@@ -107,9 +113,13 @@ export default class extends React.Component {
         static propTypes = {
             factor: React.PropTypes.number,
             offset: React.PropTypes.number,
-            speed: React.PropTypes.number
+            speed: React.PropTypes.number,
         }
-        static defaultProps = { factor: 1, offset: 0, speed: 0 }
+        static defaultProps = {
+            factor: 1,
+            offset: 0,
+            speed: 0
+        }
 
         constructor(props, context) {
             super(props, context)
@@ -138,12 +148,12 @@ export default class extends React.Component {
             const targetScroll = Math.floor(this.props.offset) * height
             const offset = height * this.props.offset + targetScroll * this.props.speed
             const toValue = parseFloat(-(scrollTop * this.props.speed) + offset)
-            Animated.spring(this.animatedTranslate, { toValue }).start()
+            this.context.parallax.props.effect(this.animatedTranslate, toValue).start()
         }
 
         setHeight(height) {
             const toValue = parseFloat(height * this.props.factor)
-            Animated.spring(this.animatedHeight, { toValue }).start()
+            this.context.parallax.props.effect(this.animatedHeight, toValue).start()
         }
 
         render() {

@@ -9,16 +9,16 @@ Simple example: http://react-springy-parallax-simple.surge.sh
 Example source: https://github.com/drcmda/react-springy-parallax/blob/master/example/index.js
 
 ![intro](intro.gif)
-    
+
 How to use
 
 ```js
 import Parallax from 'react-springy-parallax'
-    
+
 // Pages determines the total height of the inner content container
 // Each page takes 100% height of the visible outer container by default
 <Parallax ref="parallax" pages={3}>
-    
+
     // Add as many layers as you like
     <Parallax.Layer
         // Page offset, or where the layer will be at when scrolled to
@@ -32,8 +32,21 @@ import Parallax from 'react-springy-parallax'
         // The main Parallax component has automated scrolling built in
         onClick={() => this.refs.parallax.scrollTo(1)}
     >
-        
-        // Layers can contain anything 
+
+        // Layers can contain anything
         <span>Click!</span>
-        
+
     </Parallax.Layer>
+```
+
+How to change the effect?
+
+```js
+import Animated from 'animated/lib/targets/react-dom'
+
+<Parallax
+    pages={4}
+    effect={(animation, toValue) => Animated.timing(animation, { toValue, duration: 200 })}>
+```
+
+You can use anything the Animated library offers: http://browniefed.com/react-native-animation-book

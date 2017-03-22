@@ -56,7 +56,7 @@ var _class = function (_React$Component) {
                 var value = _ref.value;
                 return target.scrollTop = value;
             });
-            _reactDom2.default.spring(this.animatedScroll, { toValue: offset * this.height }).start();
+            this.props.effect(this.animatedScroll, offset * this.height).start();
         }
     }, {
         key: 'getChildContext',
@@ -120,7 +120,15 @@ var _class = function (_React$Component) {
     return _class;
 }(_react2.default.Component);
 
-_class.propTypes = { pages: _react2.default.PropTypes.number.isRequired };
+_class.propTypes = {
+    pages: _react2.default.PropTypes.number.isRequired,
+    effect: _react2.default.PropTypes.func
+};
+_class.defaultProps = {
+    effect: function effect(animation, toValue) {
+        return _reactDom2.default.spring(animation, { toValue: toValue });
+    }
+};
 _class.childContextTypes = { parallax: _react2.default.PropTypes.object };
 _class.Layer = (_temp = _class2 = function (_React$Component2) {
     _inherits(_class2, _React$Component2);
@@ -164,13 +172,13 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
             var targetScroll = Math.floor(this.props.offset) * height;
             var offset = height * this.props.offset + targetScroll * this.props.speed;
             var toValue = parseFloat(-(scrollTop * this.props.speed) + offset);
-            _reactDom2.default.spring(this.animatedTranslate, { toValue: toValue }).start();
+            this.context.parallax.props.effect(this.animatedTranslate, toValue).start();
         }
     }, {
         key: 'setHeight',
         value: function setHeight(height) {
             var toValue = parseFloat(height * this.props.factor);
-            _reactDom2.default.spring(this.animatedHeight, { toValue: toValue }).start();
+            this.context.parallax.props.effect(this.animatedHeight, toValue).start();
         }
     }, {
         key: 'render',
@@ -210,7 +218,11 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
     factor: _react2.default.PropTypes.number,
     offset: _react2.default.PropTypes.number,
     speed: _react2.default.PropTypes.number
-}, _class2.defaultProps = { factor: 1, offset: 0, speed: 0 }, _temp);
+}, _class2.defaultProps = {
+    factor: 1,
+    offset: 0,
+    speed: 0
+}, _temp);
 
 var _initialiseProps = function _initialiseProps() {
     var _this4 = this;
