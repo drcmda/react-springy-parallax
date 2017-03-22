@@ -21,8 +21,6 @@ export default class extends React.Component {
 
     scrollerRaf = () => requestAnimationFrame(this.moveItems)
 
-    onWheel = event => this.animatedScroll && this.animatedScroll.stopAnimation()
-
     onScroll = event => {
         if (!this.busy) {
             this.busy = true
@@ -39,9 +37,11 @@ export default class extends React.Component {
         this.moveItems()
     }
 
+    scrollStop = event => this.animatedScroll && this.animatedScroll.stopAnimation()
+
     scrollTo(offset) {
+        this.scrollStop()
         const target = this.refs.container
-        this.animatedScroll && this.animatedScroll.stopAnimation()
         this.animatedScroll = new Animated.Value(target.scrollTop)
         this.animatedScroll.addListener(({ value }) => target.scrollTop = value)
         Animated.spring(this.animatedScroll, { toValue: offset * this.height }).start()
@@ -70,7 +70,8 @@ export default class extends React.Component {
             <div
                 ref="container"
                 onScroll={this.onScroll}
-                onWheel={this.onWheel}
+                onWheel={this.scrollStop}
+                onTouchStart={this.scrollStop}
                 style={{
                     position: 'absolute',
                     width: '100%',

@@ -49,8 +49,8 @@ var _class = function (_React$Component) {
     _createClass(_class, [{
         key: 'scrollTo',
         value: function scrollTo(offset) {
+            this.scrollStop();
             var target = this.refs.container;
-            this.animatedScroll && this.animatedScroll.stopAnimation();
             this.animatedScroll = new _reactDom2.default.Value(target.scrollTop);
             this.animatedScroll.addListener(function (_ref) {
                 var value = _ref.value;
@@ -88,7 +88,8 @@ var _class = function (_React$Component) {
                 {
                     ref: 'container',
                     onScroll: this.onScroll,
-                    onWheel: this.onWheel,
+                    onWheel: this.scrollStop,
+                    onTouchStart: this.scrollStop,
                     style: _extends({
                         position: 'absolute',
                         width: '100%',
@@ -176,13 +177,11 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
         value: function render() {
             var _props = this.props,
                 style = _props.style,
-                className = _props.className,
                 children = _props.children,
                 offset = _props.offset,
                 speed = _props.speed,
                 factor = _props.factor,
-                container = _props.container,
-                props = _objectWithoutProperties(_props, ['style', 'className', 'children', 'offset', 'speed', 'factor', 'container']);
+                props = _objectWithoutProperties(_props, ['style', 'children', 'offset', 'speed', 'factor']);
 
             return _react2.default.createElement(
                 _reactDom2.default.div,
@@ -197,19 +196,21 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
                         height: this.animatedHeight,
                         transform: [{
                             translate3d: this.animatedTranslate.interpolate({
-                                inputRange: [0, 1],
-                                outputRange: ['0,0px,0', '0,1px,0']
+                                inputRange: [0, 1], outputRange: ['0,0px,0', '0,1px,0']
                             })
                         }]
-                    }, style),
-                    className: className }),
+                    }, style) }),
                 children
             );
         }
     }]);
 
     return _class2;
-}(_react2.default.Component), _class2.contextTypes = { parallax: _react2.default.PropTypes.object }, _class2.propTypes = { factor: _react2.default.PropTypes.number, offset: _react2.default.PropTypes.number }, _class2.defaultProps = { factor: 1, offset: 0 }, _temp);
+}(_react2.default.Component), _class2.contextTypes = { parallax: _react2.default.PropTypes.object }, _class2.propTypes = {
+    factor: _react2.default.PropTypes.number,
+    offset: _react2.default.PropTypes.number,
+    speed: _react2.default.PropTypes.number
+}, _class2.defaultProps = { factor: 1, offset: 0, speed: 0 }, _temp);
 
 var _initialiseProps = function _initialiseProps() {
     var _this4 = this;
@@ -223,10 +224,6 @@ var _initialiseProps = function _initialiseProps() {
 
     this.scrollerRaf = function () {
         return requestAnimationFrame(_this4.moveItems);
-    };
-
-    this.onWheel = function (event) {
-        return _this4.animatedScroll && _this4.animatedScroll.stopAnimation();
     };
 
     this.onScroll = function (event) {
@@ -245,6 +242,10 @@ var _initialiseProps = function _initialiseProps() {
             return layer.setHeight(_this4.height);
         });
         _this4.moveItems();
+    };
+
+    this.scrollStop = function (event) {
+        return _this4.animatedScroll && _this4.animatedScroll.stopAnimation();
     };
 };
 
