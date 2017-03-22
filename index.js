@@ -3,6 +3,10 @@ import Animated from 'animated/lib/targets/react-dom'
 
 export default class extends React.Component {
     static propTypes = { pages: React.PropTypes.number.isRequired }
+    static childContextTypes = { parallax: React.PropTypes.object }
+    getChildContext() {
+        return { parallax: this }
+    }
 
     constructor(props) {
         super(props)
@@ -14,7 +18,7 @@ export default class extends React.Component {
         this.busy = false
 
         this.moveItems = () => {
-            this.layers.forEach(layer => layer.move(this.height, this.scrollTop, this.props.pages))
+            this.layers.forEach(layer => layer.setPosition(this.height, this.scrollTop))
             this.busy = false
         }
 
@@ -30,11 +34,11 @@ export default class extends React.Component {
             }
         }
 
-        this.onResize = () => {
+        this.update = () => {
             this.scrollTop = this.refs.container.scrollTop
             this.height = this.refs.container.clientHeight
             if (this.refs.content) this.refs.content.style.height = `${this.height * this.props.pages}px`
-            this.layers.forEach(layer => layer.height(this.height))
+            this.layers.forEach(layer => layer.setHeight(this.height))
             this.moveItems()
         }
     }
@@ -48,23 +52,20 @@ export default class extends React.Component {
     }
 
     componentDidUpdate() {
-        this.layers = Object.keys(this.refs).filter(key => this.refs[key].move).map(key => this.refs[key])
-        this.onResize()
+        this.update()
     }
 
     componentDidMount() {
-        window.addEventListener('resize', this.onResize, false)
-        this.componentDidUpdate()
+        window.addEventListener('resize', this.update, false)
+        this.update()
         this.setState({ ready: true })
     }
 
     componentWillUnmount() {
-        window.removeEventListener('resize', this.onResize, false)
+        window.removeEventListener('resize', this.update, false)
     }
 
     render() {
-        this.layers = React.Children.map(this.props.children, (child, index) =>
-            React.cloneElement(child, { ...child.props, ref: `child-${index}`, container: this }))
         return (
             <div
                 ref="container"
@@ -93,7 +94,7 @@ export default class extends React.Component {
                             height: this.height * this.props.pages,
                             ...this.props.innerStyle
                         }}>
-                        {this.layers}
+                        {this.props.children}
                     </div>}
 
             </div>
@@ -101,29 +102,43 @@ export default class extends React.Component {
     }
 
     static Layer = class extends React.Component {
-        constructor(props) {
-            super(props)
-            const targetScroll = Math.floor(props.offset) * props.container.height
-            const offset = props.container.height * props.offset + targetScroll * props.speed
-            const toValue = parseFloat(-(props.container.scrollTop * props.speed) + offset)
-            this.animTranslate = new Animated.Value(toValue)
-            const height = props.container.height * props.factor
-            this.animHeight = new Animated.Value(height)
-        }
-
+        static contextTypes = { parallax: React.PropTypes.object }
         static propTypes = { factor: React.PropTypes.number, offset: React.PropTypes.number }
         static defaultProps = { factor: 1, offset: 0 }
 
-        move(height, scrollTop, pages) {
+        constructor(props, context) {
+            super(props, context)
+            const parallax = context.parallax;
+            const targetScroll = Math.floor(props.offset) * parallax.height
+            const offset = parallax.height * props.offset + targetScroll * props.speed
+            const toValue = parseFloat(-(parallax.scrollTop * props.speed) + offset)
+            this.animatedTranslate = new Animated.Value(toValue)
+            const height = parallax.height * props.factor
+            this.animatedHeight = new Animated.Value(height)
+        }
+
+        componentDidMount() {
+            const parent = this.context.parallax
+            parent.layers = parent.layers.concat(this)
+            parent.update()
+        }
+
+        componentWillUnmount() {
+            const parent = this.context.parallax
+            parent.layers = parent.layers.filter(layer => layer === this)
+            parent.update()
+        }
+
+        setPosition(height, scrollTop) {
             const targetScroll = Math.floor(this.props.offset) * height
             const offset = height * this.props.offset + targetScroll * this.props.speed
             const toValue = parseFloat(-(scrollTop * this.props.speed) + offset)
-            Animated.spring(this.animTranslate, { toValue }).start()
+            Animated.spring(this.animatedTranslate, { toValue }).start()
         }
 
-        height(height) {
+        setHeight(height) {
             const toValue = parseFloat(height * this.props.factor)
-            Animated.spring(this.animHeight, { toValue }).start()
+            Animated.spring(this.animatedHeight, { toValue }).start()
         }
 
         render() {
@@ -139,10 +154,10 @@ export default class extends React.Component {
                         backgroundRepeat: 'no-repeat',
                         willChange: 'transform',
                         width: '100%',
-                        height: this.animHeight,
+                        height: this.animatedHeight,
                         transform: [
                             {
-                                translate3d: this.animTranslate.interpolate({
+                                translate3d: this.animatedTranslate.interpolate({
                                     inputRange: [0, 100000],
                                     outputRange: ['0,0px,0', '0,100000px,0']
                                 })
