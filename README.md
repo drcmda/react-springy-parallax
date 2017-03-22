@@ -47,7 +47,8 @@ import Easing from 'animated/lib/Easing'
 
 <Parallax
     effect={(animation, toValue) => 
-        Animated.timing(animation, { toValue, duration: 200, easing: Easing.elastic(2) })}>
+        Animated.timing(animation, { toValue, duration: 200, easing: Easing.elastic(2) })}
+    ...
 ```
 
 You can use anything the Animated library offers: http://browniefed.com/react-native-animation-book
