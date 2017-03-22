@@ -1,6 +1,6 @@
 {
   "name": "react-springy-parallax",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "composeable springy parallax",
   "main": "dist/index.js",
   "jsnext:main": "index.js",

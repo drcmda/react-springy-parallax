@@ -1,68 +1,70 @@
-import React from 'react';
-import Animated from 'animated/lib/targets/react-dom';
+import React from 'react'
+import Animated from 'animated/lib/targets/react-dom'
 
 export default class extends React.Component {
-    constructor(props) {
-        super(props);
+    static propTypes = { pages: React.PropTypes.number.isRequired }
 
-        this.state = { ready: false };
-        this.layers = [];
-        this.height = 0;
-        this.scrollTop = 0;
-        this.busy = false;
+    constructor(props) {
+        super(props)
+
+        this.state = { ready: false }
+        this.layers = []
+        this.height = 0
+        this.scrollTop = 0
+        this.busy = false
 
         this.moveItems = () => {
-            this.layers.forEach(layer => layer.move(this.height, this.scrollTop, this.props.pages));
-            this.busy = false;
-        };
+            this.layers.forEach(layer => layer.move(this.height, this.scrollTop, this.props.pages))
+            this.busy = false
+        }
 
-        this.scrollerRaf = () => requestAnimationFrame(this.moveItems);
+        this.scrollerRaf = () => requestAnimationFrame(this.moveItems)
 
-        this.onWheel = event => this.animatedScroll && this.animatedScroll.stopAnimation();
+        this.onWheel = event => this.animatedScroll && this.animatedScroll.stopAnimation()
 
         this.onScroll = event => {
             if (!this.busy) {
-                this.busy = true;
-                this.scrollerRaf();
-                this.scrollTop = event.target.scrollTop;
+                this.busy = true
+                this.scrollerRaf()
+                this.scrollTop = event.target.scrollTop
             }
-        };
+        }
 
         this.onResize = () => {
-            this.scrollTop = this.refs.container.scrollTop;
-            this.height = this.refs.container.clientHeight;
-            if (this.refs.content) this.refs.content.style.height = `${this.height * this.props.pages}px`;
-            this.layers.forEach(layer => layer.height(this.height));
-            this.moveItems();
-        };
+            this.scrollTop = this.refs.container.scrollTop
+            this.height = this.refs.container.clientHeight
+            if (this.refs.content) this.refs.content.style.height = `${this.height * this.props.pages}px`
+            this.layers.forEach(layer => layer.height(this.height))
+            this.moveItems()
+        }
     }
 
     scrollTo(offset) {
-        const target = this.refs.container;
-        this.animatedScroll && this.animatedScroll.stopAnimation();
-        this.animatedScroll = new Animated.Value(target.scrollTop);
-        this.animatedScroll.addListener(({ value }) => target.scrollTop = value);
-        Animated.spring(this.animatedScroll, { toValue: offset * this.height }).start();
+        const target = this.refs.container
+        this.animatedScroll && this.animatedScroll.stopAnimation()
+        this.animatedScroll = new Animated.Value(target.scrollTop)
+        this.animatedScroll.addListener(({ value }) => target.scrollTop = value)
+        Animated.spring(this.animatedScroll, { toValue: offset * this.height }).start()
     }
 
     componentDidUpdate() {
-        this.layers = Object.keys(this.refs).filter(key => this.refs[key].move).map(key => this.refs[key]);
-        this.onResize();
+        this.layers = Object.keys(this.refs).filter(key => this.refs[key].move).map(key => this.refs[key])
+        this.onResize()
     }
 
     componentDidMount() {
-        window.addEventListener('resize', this.onResize, false);
-        this.componentDidUpdate();
-        this.setState({ ready: true });
+        window.addEventListener('resize', this.onResize, false)
+        this.componentDidUpdate()
+        this.setState({ ready: true })
     }
 
     componentWillUnmount() {
-        window.removeEventListener('resize', this.onResize, false);
+        window.removeEventListener('resize', this.onResize, false)
     }
 
     render() {
         this.layers = React.Children.map(this.props.children, (child, index) =>
-            React.cloneElement(child, { ...child.props, ref: `child-${index}`, container: this }));
+            React.cloneElement(child, { ...child.props, ref: `child-${index}`, container: this }))
         return (
             <div
                 ref="container"
@@ -95,41 +97,37 @@ export default class extends React.Component {
                     </div>}
 
             </div>
-        );
+        )
     }
 
     static Layer = class extends React.Component {
         constructor(props) {
-            super(props);
-            const targetScroll = Math.floor(props.offset) * props.container.height;
-            const offset = props.container.height * props.offset + targetScroll * props.speed;
-            const toValue = parseFloat(-(props.container.scrollTop * props.speed) + offset);
-            this.animTranslate = new Animated.Value(toValue);
-            const height = props.container.height * props.factor;
-            this.animHeight = new Animated.Value(height);
+            super(props)
+            const targetScroll = Math.floor(props.offset) * props.container.height
+            const offset = props.container.height * props.offset + targetScroll * props.speed
+            const toValue = parseFloat(-(props.container.scrollTop * props.speed) + offset)
+            this.animTranslate = new Animated.Value(toValue)
+            const height = props.container.height * props.factor
+            this.animHeight = new Animated.Value(height)
         }
 
-        static propTypes = {
-            factor: React.PropTypes.number,
-            offset: React.PropTypes.number,
-            stretch: React.PropTypes.number
-        };
-        static defaultProps = { factor: 1, offset: 0, stretch: 1 };
+        static propTypes = { factor: React.PropTypes.number, offset: React.PropTypes.number }
+        static defaultProps = { factor: 1, offset: 0 }
 
         move(height, scrollTop, pages) {
-            const targetScroll = Math.floor(this.props.offset) * height;
-            const offset = height * this.props.offset + targetScroll * this.props.speed;
-            const toValue = parseFloat(-(scrollTop * this.props.speed) + offset);
-            Animated.spring(this.animTranslate, { toValue }).start();
+            const targetScroll = Math.floor(this.props.offset) * height
+            const offset = height * this.props.offset + targetScroll * this.props.speed
+            const toValue = parseFloat(-(scrollTop * this.props.speed) + offset)
+            Animated.spring(this.animTranslate, { toValue }).start()
         }
 
         height(height) {
-            const toValue = parseFloat(height * this.props.factor);
-            Animated.spring(this.animHeight, { toValue }).start();
+            const toValue = parseFloat(height * this.props.factor)
+            Animated.spring(this.animHeight, { toValue }).start()
         }
 
         render() {
-            let { style, className, children, offset, speed, factor, container, stretch, ...props } = this.props;
+            let { style, className, children, offset, speed, factor, container, ...props } = this.props
 
             return (
                 <Animated.div
@@ -155,7 +153,7 @@ export default class extends React.Component {
                     className={className}>
                     {children}
                 </Animated.div>
-            );
+            )
         }
-    };
+    }
 }
