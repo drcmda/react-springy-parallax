@@ -31,13 +31,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var _class = function (_React$Component) {
     _inherits(_class, _React$Component);
 
-    _createClass(_class, [{
-        key: 'getChildContext',
-        value: function getChildContext() {
-            return { parallax: this };
-        }
-    }]);
-
     function _class(props) {
         _classCallCheck(this, _class);
 
@@ -215,6 +208,10 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
 
 var _initialiseProps = function _initialiseProps() {
     var _this4 = this;
+
+    this.getChildContext = function () {
+        return { parallax: _this4 };
+    };
 
     this.moveItems = function () {
         _this4.layers.forEach(function (layer) {
