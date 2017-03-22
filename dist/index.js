@@ -43,44 +43,13 @@ var _class = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
 
+        _initialiseProps.call(_this);
+
         _this.state = { ready: false };
         _this.layers = [];
         _this.height = 0;
         _this.scrollTop = 0;
         _this.busy = false;
-
-        _this.moveItems = function () {
-            _this.layers.forEach(function (layer) {
-                return layer.setPosition(_this.height, _this.scrollTop);
-            });
-            _this.busy = false;
-        };
-
-        _this.scrollerRaf = function () {
-            return requestAnimationFrame(_this.moveItems);
-        };
-
-        _this.onWheel = function (event) {
-            return _this.animatedScroll && _this.animatedScroll.stopAnimation();
-        };
-
-        _this.onScroll = function (event) {
-            if (!_this.busy) {
-                _this.busy = true;
-                _this.scrollerRaf();
-                _this.scrollTop = event.target.scrollTop;
-            }
-        };
-
-        _this.update = function () {
-            _this.scrollTop = _this.refs.container.scrollTop;
-            _this.height = _this.refs.container.clientHeight;
-            if (_this.refs.content) _this.refs.content.style.height = _this.height * _this.props.pages + 'px';
-            _this.layers.forEach(function (layer) {
-                return layer.setHeight(_this.height);
-            });
-            _this.moveItems();
-        };
         return _this;
     }
 
@@ -243,4 +212,42 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
 
     return _class2;
 }(_react2.default.Component), _class2.contextTypes = { parallax: _react2.default.PropTypes.object }, _class2.propTypes = { factor: _react2.default.PropTypes.number, offset: _react2.default.PropTypes.number }, _class2.defaultProps = { factor: 1, offset: 0 }, _temp);
+
+var _initialiseProps = function _initialiseProps() {
+    var _this4 = this;
+
+    this.moveItems = function () {
+        _this4.layers.forEach(function (layer) {
+            return layer.setPosition(_this4.height, _this4.scrollTop);
+        });
+        _this4.busy = false;
+    };
+
+    this.scrollerRaf = function () {
+        return requestAnimationFrame(_this4.moveItems);
+    };
+
+    this.onWheel = function (event) {
+        return _this4.animatedScroll && _this4.animatedScroll.stopAnimation();
+    };
+
+    this.onScroll = function (event) {
+        if (!_this4.busy) {
+            _this4.busy = true;
+            _this4.scrollerRaf();
+            _this4.scrollTop = event.target.scrollTop;
+        }
+    };
+
+    this.update = function () {
+        _this4.scrollTop = _this4.refs.container.scrollTop;
+        _this4.height = _this4.refs.container.clientHeight;
+        if (_this4.refs.content) _this4.refs.content.style.height = _this4.height * _this4.props.pages + 'px';
+        _this4.layers.forEach(function (layer) {
+            return layer.setHeight(_this4.height);
+        });
+        _this4.moveItems();
+    };
+};
+
 exports.default = _class;

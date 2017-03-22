@@ -10,37 +10,36 @@ export default class extends React.Component {
 
     constructor(props) {
         super(props)
-
         this.state = { ready: false }
         this.layers = []
         this.height = 0
         this.scrollTop = 0
         this.busy = false
+    }
 
-        this.moveItems = () => {
-            this.layers.forEach(layer => layer.setPosition(this.height, this.scrollTop))
-            this.busy = false
+    moveItems = () => {
+        this.layers.forEach(layer => layer.setPosition(this.height, this.scrollTop))
+        this.busy = false
+    }
+
+    scrollerRaf = () => requestAnimationFrame(this.moveItems)
+
+    onWheel = event => this.animatedScroll && this.animatedScroll.stopAnimation()
+
+    onScroll = event => {
+        if (!this.busy) {
+            this.busy = true
+            this.scrollerRaf()
+            this.scrollTop = event.target.scrollTop
         }
+    }
 
-        this.scrollerRaf = () => requestAnimationFrame(this.moveItems)
-
-        this.onWheel = event => this.animatedScroll && this.animatedScroll.stopAnimation()
-
-        this.onScroll = event => {
-            if (!this.busy) {
-                this.busy = true
-                this.scrollerRaf()
-                this.scrollTop = event.target.scrollTop
-            }
-        }
-
-        this.update = () => {
-            this.scrollTop = this.refs.container.scrollTop
-            this.height = this.refs.container.clientHeight
-            if (this.refs.content) this.refs.content.style.height = `${this.height * this.props.pages}px`
-            this.layers.forEach(layer => layer.setHeight(this.height))
-            this.moveItems()
-        }
+    update = () => {
+        this.scrollTop = this.refs.container.scrollTop
+        this.height = this.refs.container.clientHeight
+        if (this.refs.content) this.refs.content.style.height = `${this.height * this.props.pages}px`
+        this.layers.forEach(layer => layer.setHeight(this.height))
+        this.moveItems()
     }
 
     scrollTo(offset) {
