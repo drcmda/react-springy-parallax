@@ -59,9 +59,9 @@ var _class = function (_React$Component) {
             _reactDom2.default.spring(this.animatedScroll, { toValue: offset * this.height }).start();
         }
     }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate() {
-            this.update();
+        key: 'getChildContext',
+        value: function getChildContext() {
+            return { parallax: this };
         }
     }, {
         key: 'componentDidMount',
@@ -74,6 +74,11 @@ var _class = function (_React$Component) {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
             window.removeEventListener('resize', this.update, false);
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate() {
+            this.update();
         }
     }, {
         key: 'render',
@@ -208,10 +213,6 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
 
 var _initialiseProps = function _initialiseProps() {
     var _this4 = this;
-
-    this.getChildContext = function () {
-        return { parallax: _this4 };
-    };
 
     this.moveItems = function () {
         _this4.layers.forEach(function (layer) {

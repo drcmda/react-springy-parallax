@@ -4,7 +4,7 @@ import Animated from 'animated/lib/targets/react-dom'
 export default class extends React.Component {
     static propTypes = { pages: React.PropTypes.number.isRequired }
     static childContextTypes = { parallax: React.PropTypes.object }
-    
+
     constructor(props) {
         super(props)
         this.state = { ready: false }
@@ -13,8 +13,6 @@ export default class extends React.Component {
         this.scrollTop = 0
         this.busy = false
     }
-
-    getChildContext = () => ({ parallax: this })
 
     moveItems = () => {
         this.layers.forEach(layer => layer.setPosition(this.height, this.scrollTop))
@@ -49,8 +47,8 @@ export default class extends React.Component {
         Animated.spring(this.animatedScroll, { toValue: offset * this.height }).start()
     }
 
-    componentDidUpdate() {
-        this.update()
+    getChildContext() {
+        return { parallax: this }
     }
 
     componentDidMount() {
@@ -61,6 +59,10 @@ export default class extends React.Component {
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.update, false)
+    }
+
+    componentDidUpdate() {
+        this.update()
     }
 
     render() {
