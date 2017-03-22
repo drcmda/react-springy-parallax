@@ -18,6 +18,7 @@ import Parallax from 'react-springy-parallax'
 // Pages determines the total height of the inner content container
 // Each page takes 100% height of the visible outer container by default
 <Parallax ref="parallax" pages={3}>
+    
     // Add as many layers as you like
     <Parallax.Layer
         // Page offset, or where the layer will be at when scrolled to
