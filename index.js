@@ -146,7 +146,7 @@ export default class extends React.Component {
         }
 
         render() {
-            const { style, className, children, offset, speed, factor, container, ...props } = this.props
+            const { style, children, offset, speed, factor, ...props } = this.props
             return (
                 <Animated.div
                     {...props}
@@ -158,17 +158,13 @@ export default class extends React.Component {
                         willChange: 'transform',
                         width: '100%',
                         height: this.animatedHeight,
-                        transform: [
-                            {
-                                translate3d: this.animatedTranslate.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: ['0,0px,0', '0,1px,0']
-                                })
-                            }
-                        ],
+                        transform: [{
+                            translate3d: this.animatedTranslate.interpolate({
+                                inputRange: [0, 1], outputRange: ['0,0px,0', '0,1px,0']
+                            })
+                        }],
                         ...style
-                    }}
-                    className={className}>
+                    }}>
                     {children}
                 </Animated.div>
             )
