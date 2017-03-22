@@ -31,6 +31,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var _class = function (_React$Component) {
     _inherits(_class, _React$Component);
 
+    _createClass(_class, [{
+        key: 'getChildContext',
+        value: function getChildContext() {
+            return { parallax: this };
+        }
+    }]);
+
     function _class(props) {
         _classCallCheck(this, _class);
 
@@ -44,7 +51,7 @@ var _class = function (_React$Component) {
 
         _this.moveItems = function () {
             _this.layers.forEach(function (layer) {
-                return layer.move(_this.height, _this.scrollTop, _this.props.pages);
+                return layer.setPosition(_this.height, _this.scrollTop);
             });
             _this.busy = false;
         };
@@ -65,12 +72,12 @@ var _class = function (_React$Component) {
             }
         };
 
-        _this.onResize = function () {
+        _this.update = function () {
             _this.scrollTop = _this.refs.container.scrollTop;
             _this.height = _this.refs.container.clientHeight;
             if (_this.refs.content) _this.refs.content.style.height = _this.height * _this.props.pages + 'px';
             _this.layers.forEach(function (layer) {
-                return layer.height(_this.height);
+                return layer.setHeight(_this.height);
             });
             _this.moveItems();
         };
@@ -92,35 +99,23 @@ var _class = function (_React$Component) {
     }, {
         key: 'componentDidUpdate',
         value: function componentDidUpdate() {
-            var _this2 = this;
-
-            this.layers = Object.keys(this.refs).filter(function (key) {
-                return _this2.refs[key].move;
-            }).map(function (key) {
-                return _this2.refs[key];
-            });
-            this.onResize();
+            this.update();
         }
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            window.addEventListener('resize', this.onResize, false);
-            this.componentDidUpdate();
+            window.addEventListener('resize', this.update, false);
+            this.update();
             this.setState({ ready: true });
         }
     }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
-            window.removeEventListener('resize', this.onResize, false);
+            window.removeEventListener('resize', this.update, false);
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this3 = this;
-
-            this.layers = _react2.default.Children.map(this.props.children, function (child, index) {
-                return _react2.default.cloneElement(child, _extends({}, child.props, { ref: 'child-' + index, container: _this3 }));
-            });
             return _react2.default.createElement(
                 'div',
                 {
@@ -148,7 +143,7 @@ var _class = function (_React$Component) {
                             overflow: 'hidden',
                             height: this.height * this.props.pages
                         }, this.props.innerStyle) },
-                    this.layers
+                    this.props.children
                 )
             );
         }
@@ -157,36 +152,57 @@ var _class = function (_React$Component) {
     return _class;
 }(_react2.default.Component);
 
+_class.propTypes = { pages: _react2.default.PropTypes.number.isRequired };
+_class.childContextTypes = { parallax: _react2.default.PropTypes.object };
 _class.Layer = (_temp = _class2 = function (_React$Component2) {
     _inherits(_class2, _React$Component2);
 
-    function _class2(props) {
+    function _class2(props, context) {
         _classCallCheck(this, _class2);
 
-        var _this4 = _possibleConstructorReturn(this, (_class2.__proto__ || Object.getPrototypeOf(_class2)).call(this, props));
+        var _this2 = _possibleConstructorReturn(this, (_class2.__proto__ || Object.getPrototypeOf(_class2)).call(this, props, context));
 
-        var targetScroll = Math.floor(props.offset) * props.container.height;
-        var offset = props.container.height * props.offset + targetScroll * props.speed;
-        var toValue = parseFloat(-(props.container.scrollTop * props.speed) + offset);
-        _this4.animTranslate = new _reactDom2.default.Value(toValue);
-        var height = props.container.height * props.factor;
-        _this4.animHeight = new _reactDom2.default.Value(height);
-        return _this4;
+        var parallax = context.parallax;
+        var targetScroll = Math.floor(props.offset) * parallax.height;
+        var offset = parallax.height * props.offset + targetScroll * props.speed;
+        var toValue = parseFloat(-(parallax.scrollTop * props.speed) + offset);
+        _this2.animatedTranslate = new _reactDom2.default.Value(toValue);
+        var height = parallax.height * props.factor;
+        _this2.animatedHeight = new _reactDom2.default.Value(height);
+        return _this2;
     }
 
     _createClass(_class2, [{
-        key: 'move',
-        value: function move(height, scrollTop, pages) {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            var parent = this.context.parallax;
+            parent.layers = parent.layers.concat(this);
+            parent.update();
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            var _this3 = this;
+
+            var parent = this.context.parallax;
+            parent.layers = parent.layers.filter(function (layer) {
+                return layer !== _this3;
+            });
+            parent.update();
+        }
+    }, {
+        key: 'setPosition',
+        value: function setPosition(height, scrollTop) {
             var targetScroll = Math.floor(this.props.offset) * height;
             var offset = height * this.props.offset + targetScroll * this.props.speed;
             var toValue = parseFloat(-(scrollTop * this.props.speed) + offset);
-            _reactDom2.default.spring(this.animTranslate, { toValue: toValue }).start();
+            _reactDom2.default.spring(this.animatedTranslate, { toValue: toValue }).start();
         }
     }, {
-        key: 'height',
-        value: function height(_height) {
-            var toValue = parseFloat(_height * this.props.factor);
-            _reactDom2.default.spring(this.animHeight, { toValue: toValue }).start();
+        key: 'setHeight',
+        value: function setHeight(height) {
+            var toValue = parseFloat(height * this.props.factor);
+            _reactDom2.default.spring(this.animatedHeight, { toValue: toValue }).start();
         }
     }, {
         key: 'render',
@@ -199,8 +215,7 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
                 speed = _props.speed,
                 factor = _props.factor,
                 container = _props.container,
-                stretch = _props.stretch,
-                props = _objectWithoutProperties(_props, ['style', 'className', 'children', 'offset', 'speed', 'factor', 'container', 'stretch']);
+                props = _objectWithoutProperties(_props, ['style', 'className', 'children', 'offset', 'speed', 'factor', 'container']);
 
             return _react2.default.createElement(
                 _reactDom2.default.div,
@@ -212,11 +227,11 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
                         backgroundRepeat: 'no-repeat',
                         willChange: 'transform',
                         width: '100%',
-                        height: this.animHeight,
+                        height: this.animatedHeight,
                         transform: [{
-                            translate3d: this.animTranslate.interpolate({
-                                inputRange: [0, 100000],
-                                outputRange: ['0,0px,0', '0,100000px,0']
+                            translate3d: this.animatedTranslate.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: ['0,0px,0', '0,1px,0']
                             })
                         }]
                     }, style),
@@ -227,9 +242,5 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
     }]);
 
     return _class2;
-}(_react2.default.Component), _class2.propTypes = {
-    factor: _react2.default.PropTypes.number,
-    offset: _react2.default.PropTypes.number,
-    stretch: _react2.default.PropTypes.number
-}, _class2.defaultProps = { factor: 1, offset: 0, stretch: 1 }, _temp);
+}(_react2.default.Component), _class2.contextTypes = { parallax: _react2.default.PropTypes.object }, _class2.propTypes = { factor: _react2.default.PropTypes.number, offset: _react2.default.PropTypes.number }, _class2.defaultProps = { factor: 1, offset: 0 }, _temp);
 exports.default = _class;
