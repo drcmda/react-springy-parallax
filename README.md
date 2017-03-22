@@ -30,5 +30,8 @@ import Parallax from 'react-springy-parallax'
         style={styles}
         // The main Parallax component has automated scrolling built in
         onClick={() => this.refs.parallax.scrollTo(1)}>
+        
+        // Layers can contain anything 
         Click!
+        
     </Parallax.Layer>
