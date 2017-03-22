@@ -32,6 +32,6 @@ import Parallax from 'react-springy-parallax'
         onClick={() => this.refs.parallax.scrollTo(1)}>
         
         // Layers can contain anything 
-        Click!
+        <span>Click!</span>
         
     </Parallax.Layer>
