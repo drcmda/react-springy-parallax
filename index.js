@@ -125,7 +125,7 @@ export default class extends React.Component {
 
         componentWillUnmount() {
             const parent = this.context.parallax
-            parent.layers = parent.layers.filter(layer => layer === this)
+            parent.layers = parent.layers.filter(layer => layer !== this)
             parent.update()
         }
 
