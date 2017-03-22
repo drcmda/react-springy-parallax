@@ -46,7 +46,6 @@ import Animated from 'animated/lib/targets/react-dom'
 import Easing from 'animated/lib/Easing'
 
 <Parallax
-    pages={4}
     effect={(animation, toValue) => 
         Animated.timing(animation, { toValue, duration: 200, easing: Easing.elastic(2) })}>
 ```
