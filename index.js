@@ -103,8 +103,12 @@ export default class extends React.Component {
 
     static Layer = class extends React.Component {
         static contextTypes = { parallax: React.PropTypes.object }
-        static propTypes = { factor: React.PropTypes.number, offset: React.PropTypes.number }
-        static defaultProps = { factor: 1, offset: 0 }
+        static propTypes = {
+            factor: React.PropTypes.number,
+            offset: React.PropTypes.number,
+            speed: React.PropTypes.number
+        }
+        static defaultProps = { factor: 1, offset: 0, speed: 0 }
 
         constructor(props, context) {
             super(props, context)
