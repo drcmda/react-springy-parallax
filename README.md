@@ -30,13 +30,14 @@ import Parallax from 'react-springy-parallax'
         // Layer accepts all common props like styles, classNames, events
         style={styles}
         // The main Parallax component has automated scrolling built in
-        onClick={() => this.refs.parallax.scrollTo(1)}
-    >
+        onClick={() => this.refs.parallax.scrollTo(1)}>
 
         // Layers can contain anything
         <span>Click!</span>
 
     </Parallax.Layer>
+    
+</Parallax>
 ```
 
 How to change the effect?
