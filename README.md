@@ -42,6 +42,10 @@ import Parallax from 'react-springy-parallax'
 
 How to change the effect?
 
+You can use anything the Animated library offers: http://browniefed.com/react-native-animation-book
+
+For instance switch the spring to a time based driver:
+
 ```js
 import Animated from 'animated/lib/targets/react-dom'
 import Easing from 'animated/lib/Easing'
@@ -51,5 +55,3 @@ import Easing from 'animated/lib/Easing'
         Animated.timing(animation, { toValue, duration: 200, easing: Easing.elastic(2) })}
     ...
 ```
-
-You can use anything the Animated library offers: http://browniefed.com/react-native-animation-book
