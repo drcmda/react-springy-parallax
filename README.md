@@ -56,7 +56,7 @@ import Easing from 'animated/lib/Easing'
     ...
 ```
 
-Or a zero timer for a regular old-school paralax:
+Or a zero timer for a tame, old-school parallax:
 
 ```js
 effect={(animation, toValue) => 
