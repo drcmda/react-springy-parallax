@@ -40,11 +40,11 @@ import Parallax from 'react-springy-parallax'
 </Parallax>
 ```
 
-How to change the effect?
+Changing the effect is also possible.
 
 You can use anything the Animated library offers: http://browniefed.com/react-native-animation-book
 
-For instance switch the spring to a time based driver:
+For instance switching the default spring to a time based driver:
 
 ```js
 import Animated from 'animated/lib/targets/react-dom'
