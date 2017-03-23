@@ -55,3 +55,9 @@ import Easing from 'animated/lib/Easing'
         Animated.timing(animation, { toValue, duration: 200, easing: Easing.elastic(2) })}
     ...
 ```
+
+Or a zero timer for a regular old-school paralax:
+
+```js
+effect={(animation, toValue) => 
+    Animated.timing(animation, { toValue, duration: 0 })}
