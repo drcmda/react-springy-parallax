@@ -41,9 +41,10 @@ Yes, you can use anything the Animated library offers: http://browniefed.com/rea
 
 ```js
 import Animated from 'animated/lib/targets/react-dom'
+import Easing from 'animated/lib/Easing'
 
 <Parallax
-    effect={(animation, toValue) => Animated.timing(animation, { toValue, duration: 200 })}
+    effect={(animation, toValue) => Animated.timing(animation, { toValue, duration: 200, easing: Easing.elastic(2) })}
     ...
 ```
 
