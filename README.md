@@ -30,23 +30,34 @@ import Parallax from 'react-springy-parallax'
         // Layer accepts all common props like styles, classNames, events
         style={styles}
         // The main Parallax component has automated scrolling built in
-        onClick={() => this.refs.parallax.scrollTo(1)}
-    >
+        onClick={() => this.refs.parallax.scrollTo(1)}>
 
         // Layers can contain anything
         <span>Click!</span>
 
     </Parallax.Layer>
+    
+</Parallax>
 ```
 
-How to change the effect?
+Changing the effect is also possible.
+
+You can use anything the Animated library offers: http://browniefed.com/react-native-animation-book
+
+For instance switching the default spring to a time based driver:
 
 ```js
 import Animated from 'animated/lib/targets/react-dom'
+import Easing from 'animated/lib/Easing'
 
 <Parallax
-    pages={4}
-    effect={(animation, toValue) => Animated.timing(animation, { toValue, duration: 200 })}>
+    effect={(animation, toValue) => 
+        Animated.timing(animation, { toValue, duration: 200, easing: Easing.elastic(2) })}
+    ...
 ```
 
-You can use anything the Animated library offers: http://browniefed.com/react-native-animation-book
+Or a zero timer for a tame, old-school parallax:
+
+```js
+effect={(animation, toValue) => 
+    Animated.timing(animation, { toValue, duration: 0 })}
