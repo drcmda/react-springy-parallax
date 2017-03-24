@@ -27,9 +27,8 @@ import Parallax from 'react-springy-parallax'
         // Parallax factor, allows for positive and negative values
         // Shifts the layer up or down in accordance to its offset
         speed={0.5}>
-
-        // Layers can contain anything
-        <span>Click!</span>
+        
+        <span>Layers can contain anything</span>
 
     </Parallax.Layer>
 
