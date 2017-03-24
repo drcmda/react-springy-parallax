@@ -42,6 +42,7 @@ var _class = function (_React$Component) {
         _this.layers = [];
         _this.height = 0;
         _this.scrollTop = 0;
+        _this.offset = 0;
         _this.busy = false;
         return _this;
     }
@@ -50,6 +51,7 @@ var _class = function (_React$Component) {
         key: 'scrollTo',
         value: function scrollTo(offset) {
             this.scrollStop();
+            this.offset = offset;
             var target = this.refs.container;
             this.animatedScroll = new _reactDom2.default.Value(target.scrollTop);
             this.animatedScroll.addListener(function (_ref) {
@@ -66,14 +68,14 @@ var _class = function (_React$Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            window.addEventListener('resize', this.update, false);
+            window.addEventListener('resize', this.updateRaf, false);
             this.update();
             this.setState({ ready: true });
         }
     }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
-            window.removeEventListener('resize', this.update, false);
+            window.removeEventListener('resize', this.updateRaf, false);
         }
     }, {
         key: 'componentDidUpdate',
@@ -83,23 +85,31 @@ var _class = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
+            var _props = this.props,
+                style = _props.style,
+                innerStyle = _props.innerStyle,
+                pages = _props.pages,
+                className = _props.className,
+                scrolling = _props.scrolling,
+                children = _props.children;
+
             return _react2.default.createElement(
                 'div',
                 {
                     ref: 'container',
                     onScroll: this.onScroll,
-                    onWheel: this.scrollStop,
-                    onTouchStart: this.scrollStop,
+                    onWheel: scrolling && this.scrollStop,
+                    onTouchStart: scrolling && this.scrollStop,
                     style: _extends({
                         position: 'absolute',
                         width: '100%',
                         height: '100%',
-                        overflow: 'scroll',
+                        overflow: scrolling ? 'scroll' : 'hidden',
                         overflowX: 'hidden',
                         WebkitOverflowScrolling: 'touch',
                         transform: 'translate3d(0, 0, 0)'
-                    }, this.props.style),
-                    className: this.props.className },
+                    }, style),
+                    className: className },
                 this.state.ready && _react2.default.createElement(
                     'div',
                     {
@@ -109,9 +119,9 @@ var _class = function (_React$Component) {
                             width: '100%',
                             transform: 'translate3d(0, 0, 0)',
                             overflow: 'hidden',
-                            height: this.height * this.props.pages
-                        }, this.props.innerStyle) },
-                    this.props.children
+                            height: this.height * pages
+                        }, innerStyle) },
+                    children
                 )
             );
         }
@@ -122,12 +132,14 @@ var _class = function (_React$Component) {
 
 _class.propTypes = {
     pages: _react2.default.PropTypes.number.isRequired,
-    effect: _react2.default.PropTypes.func
+    effect: _react2.default.PropTypes.func,
+    scrolling: _react2.default.PropTypes.bool
 };
 _class.defaultProps = {
     effect: function effect(animation, toValue) {
         return _reactDom2.default.spring(animation, { toValue: toValue });
-    }
+    },
+    scrolling: true
 };
 _class.childContextTypes = { parallax: _react2.default.PropTypes.object };
 _class.Layer = (_temp = _class2 = function (_React$Component2) {
@@ -169,27 +181,31 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
     }, {
         key: 'setPosition',
         value: function setPosition(height, scrollTop) {
+            var immediate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
             var targetScroll = Math.floor(this.props.offset) * height;
             var offset = height * this.props.offset + targetScroll * this.props.speed;
             var toValue = parseFloat(-(scrollTop * this.props.speed) + offset);
-            this.context.parallax.props.effect(this.animatedTranslate, toValue).start();
+            if (!immediate) this.context.parallax.props.effect(this.animatedTranslate, toValue).start();else this.animatedTranslate.setValue(toValue);
         }
     }, {
         key: 'setHeight',
         value: function setHeight(height) {
+            var immediate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
             var toValue = parseFloat(height * this.props.factor);
-            this.context.parallax.props.effect(this.animatedHeight, toValue).start();
+            if (!immediate) this.context.parallax.props.effect(this.animatedHeight, toValue).start();else this.animatedHeight.setValue(toValue);
         }
     }, {
         key: 'render',
         value: function render() {
-            var _props = this.props,
-                style = _props.style,
-                children = _props.children,
-                offset = _props.offset,
-                speed = _props.speed,
-                factor = _props.factor,
-                props = _objectWithoutProperties(_props, ['style', 'children', 'offset', 'speed', 'factor']);
+            var _props2 = this.props,
+                style = _props2.style,
+                children = _props2.children,
+                offset = _props2.offset,
+                speed = _props2.speed,
+                factor = _props2.factor,
+                props = _objectWithoutProperties(_props2, ['style', 'children', 'offset', 'speed', 'factor']);
 
             return _react2.default.createElement(
                 _reactDom2.default.div,
@@ -204,7 +220,8 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
                         height: this.animatedHeight,
                         transform: [{
                             translate3d: this.animatedTranslate.interpolate({
-                                inputRange: [0, 1], outputRange: ['0,0px,0', '0,1px,0']
+                                inputRange: [0, 1],
+                                outputRange: ['0,0px,0', '0,1px,0']
                             })
                         }]
                     }, style) }),
@@ -247,13 +264,21 @@ var _initialiseProps = function _initialiseProps() {
     };
 
     this.update = function () {
-        _this4.scrollTop = _this4.refs.container.scrollTop;
         _this4.height = _this4.refs.container.clientHeight;
+
+        if (_this4.props.scrolling) _this4.scrollTop = _this4.refs.container.scrollTop;else _this4.refs.container.scrollTop = _this4.scrollTop = _this4.offset * _this4.height;
+
         if (_this4.refs.content) _this4.refs.content.style.height = _this4.height * _this4.props.pages + 'px';
         _this4.layers.forEach(function (layer) {
-            return layer.setHeight(_this4.height);
+            layer.setHeight(_this4.height, true);
+            layer.setPosition(_this4.height, _this4.scrollTop, true);
         });
-        _this4.moveItems();
+    };
+
+    this.updateRaf = function () {
+        requestAnimationFrame(_this4.update);
+        // Some browsers don't fire on maximize
+        setTimeout(_this4.update, 150);
     };
 
     this.scrollStop = function (event) {
