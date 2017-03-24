@@ -10,7 +10,7 @@ Example source: https://github.com/drcmda/react-springy-parallax/blob/master/exa
 
 ![intro](intro.gif)
 
-How to use
+<b>How to use</b>
 
 ```js
 import Parallax from 'react-springy-parallax'
@@ -36,7 +36,7 @@ import Parallax from 'react-springy-parallax'
 </Parallax>
 ```
 
-Can the effect be configured?
+<b>Can the effect be configured?</b>
 
 Yes, you can use anything the Animated library offers: http://browniefed.com/react-native-animation-book
 
@@ -55,9 +55,11 @@ effect={(animation, toValue) =>
     Animated.timing(animation, { toValue, duration: 0 })}
 ```
 
-Is it possible disable the scroll bar for custom page navigation?
+<b>Is it possible disable the scroll bar for custom page navigation?</b>
 
 Yes. In this mode it will also make sure window-resize retains the last page seen.
+
+You can always use `scrollTo`, scroll bar or not, there is no restriction.
 
 ```js
 <Parallax
