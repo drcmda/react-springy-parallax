@@ -46,7 +46,7 @@ import Easing from 'animated/lib/Easing'
 <Parallax
     effect={(animation, toValue) => 
         Animated.timing(animation, { toValue, duration: 200, easing: Easing.elastic(2) })}
-    ...
+    ... >
 ```
 
 Or a zero timer for a tame, old-school parallax:
@@ -66,7 +66,7 @@ You can always use `scrollTo`, scroll bar or not, there is no restriction.
 <Parallax
     ref='parallax'
     scrolling={false}
-    ...
+    ... >
     <Parallax.Layer>
         <div onClick={this.refs.parallax.scrollTo(1)}>Click to get to the next page</div>
 ```
