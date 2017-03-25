@@ -35,7 +35,7 @@ import Parallax from 'react-springy-parallax'
 </Parallax>
 ```
 
-<b>Can the effect be configured?</b>
+<b>Can the effect be configured or muted?</b>
 
 Yes, you can use anything the Animated library offers: http://browniefed.com/react-native-animation-book
 
