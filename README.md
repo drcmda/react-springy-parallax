@@ -68,5 +68,6 @@ You can always use `scrollTo`, scroll bar or not, there is no restriction.
     scrolling={false}
     ... >
     <Parallax.Layer>
-        <div onClick={this.refs.parallax.scrollTo(1)}>Click to get to the next page</div>
+        <div onClick={() => this.refs.parallax.scrollTo(1)}>
+            Click to get to the next page
 ```
