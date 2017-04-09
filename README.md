@@ -35,7 +35,7 @@ import Parallax from 'react-springy-parallax'
 </Parallax>
 ```
 
-<b>Can the effect be configured?</b>
+<b>Can the effect be configured or muted?</b>
 
 Yes, you can use anything the Animated library offers: http://browniefed.com/react-native-animation-book
 
@@ -64,9 +64,10 @@ You can always use `scrollTo`, scroll bar or not, there is no restriction.
 
 ```js
 <Parallax
-    ref='parallax'
+    ref={ref => this.parallax = ref}
     scrolling={false}
     ... >
     <Parallax.Layer>
-        <div onClick={this.refs.parallax.scrollTo(1)}>Click to get to the next page</div>
+        <div onClick={() => this.parallax.scrollTo(1)}>
+            Click to get to the next page
 ```
