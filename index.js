@@ -1,17 +1,18 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Animated from 'animated/lib/targets/react-dom'
 
 export default class extends React.Component {
     static propTypes = {
-        pages: React.PropTypes.number.isRequired,
-        effect: React.PropTypes.func,
-        scrolling: React.PropTypes.bool
+        pages: PropTypes.number.isRequired,
+        effect: PropTypes.func,
+        scrolling: PropTypes.bool
     }
     static defaultProps = {
         effect: (animation, toValue) => Animated.spring(animation, { toValue }),
         scrolling: true
     }
-    static childContextTypes = { parallax: React.PropTypes.object }
+    static childContextTypes = { parallax: PropTypes.object }
 
     constructor(props) {
         super(props)
@@ -125,11 +126,11 @@ export default class extends React.Component {
     }
 
     static Layer = class extends React.Component {
-        static contextTypes = { parallax: React.PropTypes.object }
+        static contextTypes = { parallax: PropTypes.object }
         static propTypes = {
-            factor: React.PropTypes.number,
-            offset: React.PropTypes.number,
-            speed: React.PropTypes.number
+            factor: PropTypes.number,
+            offset: PropTypes.number,
+            speed: PropTypes.number
         }
         static defaultProps = {
             factor: 1,
@@ -175,11 +176,12 @@ export default class extends React.Component {
         }
 
         render() {
-            const { style, children, offset, speed, factor, ...props } = this.props
+            const { style, children, offset, speed, factor, className, ...props } = this.props
             return (
                 <Animated.div
                     {...props}
                     ref="layer"
+                    className={className}
                     style={{
                         position: 'absolute',
                         backgroundSize: 'auto',

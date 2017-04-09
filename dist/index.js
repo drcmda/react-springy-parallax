@@ -14,6 +14,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _reactDom = require('animated/lib/targets/react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
@@ -131,9 +135,9 @@ var _class = function (_React$Component) {
 }(_react2.default.Component);
 
 _class.propTypes = {
-    pages: _react2.default.PropTypes.number.isRequired,
-    effect: _react2.default.PropTypes.func,
-    scrolling: _react2.default.PropTypes.bool
+    pages: _propTypes2.default.number.isRequired,
+    effect: _propTypes2.default.func,
+    scrolling: _propTypes2.default.bool
 };
 _class.defaultProps = {
     effect: function effect(animation, toValue) {
@@ -141,7 +145,7 @@ _class.defaultProps = {
     },
     scrolling: true
 };
-_class.childContextTypes = { parallax: _react2.default.PropTypes.object };
+_class.childContextTypes = { parallax: _propTypes2.default.object };
 _class.Layer = (_temp = _class2 = function (_React$Component2) {
     _inherits(_class2, _React$Component2);
 
@@ -205,12 +209,14 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
                 offset = _props2.offset,
                 speed = _props2.speed,
                 factor = _props2.factor,
-                props = _objectWithoutProperties(_props2, ['style', 'children', 'offset', 'speed', 'factor']);
+                className = _props2.className,
+                props = _objectWithoutProperties(_props2, ['style', 'children', 'offset', 'speed', 'factor', 'className']);
 
             return _react2.default.createElement(
                 _reactDom2.default.div,
                 _extends({}, props, {
                     ref: 'layer',
+                    className: className,
                     style: _extends({
                         position: 'absolute',
                         backgroundSize: 'auto',
@@ -231,10 +237,10 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
     }]);
 
     return _class2;
-}(_react2.default.Component), _class2.contextTypes = { parallax: _react2.default.PropTypes.object }, _class2.propTypes = {
-    factor: _react2.default.PropTypes.number,
-    offset: _react2.default.PropTypes.number,
-    speed: _react2.default.PropTypes.number
+}(_react2.default.Component), _class2.contextTypes = { parallax: _propTypes2.default.object }, _class2.propTypes = {
+    factor: _propTypes2.default.number,
+    offset: _propTypes2.default.number,
+    speed: _propTypes2.default.number
 }, _class2.defaultProps = {
     factor: 1,
     offset: 0,
