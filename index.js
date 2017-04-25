@@ -40,6 +40,7 @@ export default class extends React.Component {
     }
 
     update = () => {
+        if (!this.refs.container) return;
         this.height = this.refs.container.clientHeight
 
         if (this.props.scrolling) this.scrollTop = this.refs.container.scrollTop
