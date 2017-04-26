@@ -274,6 +274,7 @@ var _initialiseProps = function _initialiseProps() {
     };
 
     this.update = function () {
+        if (!_this4.refs.container) return;
         _this4.height = _this4.refs.container.clientHeight;
 
         if (_this4.props.scrolling) _this4.scrollTop = _this4.refs.container.scrollTop;else _this4.refs.container.scrollTop = _this4.scrollTop = _this4.offset * _this4.height;
