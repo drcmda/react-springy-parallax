@@ -168,8 +168,10 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
         key: 'componentDidMount',
         value: function componentDidMount() {
             var parent = this.context.parallax;
-            parent.layers = parent.layers.concat(this);
-            parent.update();
+            if (parent) {
+                parent.layers = parent.layers.concat(this);
+                parent.update();
+            }
         }
     }, {
         key: 'componentWillUnmount',
@@ -177,10 +179,12 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
             var _this3 = this;
 
             var parent = this.context.parallax;
-            parent.layers = parent.layers.filter(function (layer) {
-                return layer !== _this3;
-            });
-            parent.update();
+            if (parent) {
+                parent.layers = parent.layers.filter(function (layer) {
+                    return layer !== _this3;
+                });
+                parent.update();
+            }
         }
     }, {
         key: 'setPosition',

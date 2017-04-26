@@ -151,14 +151,18 @@ export default class extends React.Component {
 
         componentDidMount() {
             const parent = this.context.parallax
-            parent.layers = parent.layers.concat(this)
-            parent.update()
+            if (parent) {
+                parent.layers = parent.layers.concat(this)
+                parent.update()
+            }
         }
 
         componentWillUnmount() {
             const parent = this.context.parallax
-            parent.layers = parent.layers.filter(layer => layer !== this)
-            parent.update()
+            if (parent) {
+                parent.layers = parent.layers.filter(layer => layer !== this)
+                parent.update()
+            }
         }
 
         setPosition(height, scrollTop, immediate = false) {
