@@ -216,7 +216,7 @@ export default class extends React.Component {
         className,
         ...props
       } = this.props;
-      
+
       const vendorTranslate =
         'translate(' +
         this.animatedTranslate.interpolate({
@@ -241,8 +241,8 @@ export default class extends React.Component {
             willChange: 'transform',
             width: '100%',
             height: this.animatedHeight,
-            WebkitTransform: 'translate(0, 0)',
-            MsTransform: 'translate(0, 0)',
+            WebkitTransform: vendorTranslate,
+            MsTransform: vendorTranslate,
             transform: [
               {
                 translate3d: this.animatedTranslate.interpolate({

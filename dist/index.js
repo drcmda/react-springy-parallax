@@ -241,8 +241,8 @@ _class.Layer = (_temp = _class2 = function (_React$Component2) {
             willChange: 'transform',
             width: '100%',
             height: this.animatedHeight,
-            WebkitTransform: 'translate(0, 0)',
-            MsTransform: 'translate(0, 0)',
+            WebkitTransform: vendorTranslate,
+            MsTransform: vendorTranslate,
             transform: [{
               translate3d: this.animatedTranslate.interpolate({
                 inputRange: [0, 1],
