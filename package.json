@@ -1,6 +1,6 @@
 {
   "name": "@tadaweb/react-springy-parallax",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "composeable springy parallax",
   "main": "dist/index.js",
   "jsnext:main": "index.js",
