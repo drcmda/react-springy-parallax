@@ -1,6 +1,6 @@
 {
-  "name": "react-springy-parallax",
-  "version": "1.0.11",
+  "name": "@tadaweb/react-springy-parallax",
+  "version": "1.0.12",
   "description": "composeable springy parallax",
   "main": "dist/index.js",
   "jsnext:main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/drcmda/react-springy-parallax.git"
+    "url": "git+https://github.com/christophediprima/react-springy-parallax.git"
   },
   "keywords": [
     "parallax",
