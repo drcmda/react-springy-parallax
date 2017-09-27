@@ -10,18 +10,6 @@ Example source: https://github.com/drcmda/react-springy-parallax/blob/master/exa
 
 ![intro](intro.gif)
 
-<b>React 16</b>
-
-Unfortunately the `animated` library hasn't been updated for React 16 yet. A possible workaround would be aliasing it:
-
-    npm install react-dom-animated
-
-And in your `webpack.config.js`
-
-    resolve: {
-        alias: {
-            'animated/lib/targets/react-dom': 'react-dom-animated'
-
 <b>How to use</b>
 
 ```js
