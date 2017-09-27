@@ -10,6 +10,18 @@ Example source: https://github.com/drcmda/react-springy-parallax/blob/master/exa
 
 ![intro](intro.gif)
 
+<b>React 16</b>
+
+Unfortunately the `animated` library hasn't been updated for React 16 yet. A possible workaround would be aliasing it:
+
+    npm install react-dom-animated
+
+And in your `webpack.config.js`
+
+    resolve: {
+        alias: {
+            'animated/lib/targets/react-dom': 'react-dom-animated'
+
 <b>How to use</b>
 
 ```js
@@ -27,7 +39,7 @@ import Parallax from 'react-springy-parallax'
         // Parallax factor, allows for positive and negative values
         // Shifts the layer up or down in accordance to its offset
         speed={0.5}>
-        
+
         <span>Layers can contain anything</span>
 
     </Parallax.Layer>
@@ -44,7 +56,7 @@ import Animated from 'animated/lib/targets/react-dom'
 import Easing from 'animated/lib/Easing'
 
 <Parallax
-    effect={(animation, toValue) => 
+    effect={(animation, toValue) =>
         Animated.timing(animation, { toValue, duration: 200, easing: Easing.elastic(2) })}
     ... >
 ```
