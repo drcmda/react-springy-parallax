@@ -8,6 +8,8 @@ Simple example: http://react-springy-parallax-simple.surge.sh
 
 Example source: https://github.com/drcmda/react-springy-parallax/blob/master/example/index.js
 
+More complex example: https://github.com/drcmda/awv3node-homepage
+
 ![intro](intro.gif)
 
 <b>How to use</b>
