@@ -1,7 +1,8 @@
 import React from 'react'
-import Parallax from 'react-springy-parallax'
+import ReactDOM from 'react-dom'
+import Parallax from '../index'
 
-export default class extends React.Component {
+class App extends React.Component {
     render() {
         const styles = {
             fontFamily: 'Menlo-Regular, Menlo, monospace',
@@ -45,3 +46,5 @@ export default class extends React.Component {
         )
     }
 }
+
+ReactDOM.render(<App />, document.querySelector('#root'))

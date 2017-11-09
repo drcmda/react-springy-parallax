@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Animated from 'react-dom-animated'
+import Animated from 'animated/lib/targets/react-dom'
 
 export default class extends React.Component {
     static propTypes = {
@@ -185,19 +185,11 @@ export default class extends React.Component {
 
         render() {
             const { style, children, offset, speed, factor, className, ...props } = this.props
-
-            const vendorTranslate =
-                'translate(' +
-                this.animatedTranslate.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ['0,0px', '0,1px'],
-                })._parent._offset +
-                'px,' +
-                this.animatedTranslate.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ['0,0px', '0,1px'],
-                })._parent._value +
-                'px)'
+            const translate3d = this.animatedTranslate.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['0,0px,0', '0,1px,0'],
+            })
+            
             return (
                 <Animated.div
                     {...props}
@@ -210,16 +202,9 @@ export default class extends React.Component {
                         willChange: 'transform',
                         width: '100%',
                         height: this.animatedHeight,
-                        WebkitTransform: vendorTranslate,
-                        MsTransform: vendorTranslate,
-                        transform: [
-                            {
-                                translate3d: this.animatedTranslate.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: ['0,0px,0', '0,1px,0'],
-                                }),
-                            },
-                        ],
+                        WebkitTransform: [{ translate3d }],
+                        MsTransform: [{ translate3d }],
+                        transform: [{ translate3d }],
                         ...style,
                     }}>
                     {children}
