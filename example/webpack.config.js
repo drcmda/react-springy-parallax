@@ -4,6 +4,7 @@ const webpack = require('webpack')
 
 module.exports = env => {
     return {
+        mode: 'development',
         entry: ['webpack-dev-server/client?http://localhost:8080', 'example/index.js'],
         output: { filename: 'dist/bundle.js', path: path.resolve('./') },
         module: { rules: [{ test: /\.jsx?$/, exclude: /node_modules/, use: 'babel-loader' }] },

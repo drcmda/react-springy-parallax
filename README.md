@@ -73,3 +73,11 @@ You can always use `scrollTo`, scroll bar or not, there is no restriction.
         <div onClick={() => this.parallax.scrollTo(1)}>
             Click to get to the next page
 ```
+
+<b>Does it scroll horizontally as well?</b>
+
+Sure does.
+
+```js
+<Parallax horizontal ... >
+```

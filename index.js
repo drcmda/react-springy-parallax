@@ -7,10 +7,12 @@ export default class extends React.Component {
         pages: PropTypes.number.isRequired,
         effect: PropTypes.func,
         scrolling: PropTypes.bool,
+        horizontal: PropTypes.bool,
     }
     static defaultProps = {
         effect: (animation, toValue) => Animated.spring(animation, { toValue }),
         scrolling: true,
+        horizontal: false,
     }
     static childContextTypes = { parallax: PropTypes.object }
 
@@ -18,38 +20,39 @@ export default class extends React.Component {
         super(props)
         this.state = { ready: false }
         this.layers = []
-        this.height = 0
-        this.scrollTop = 0
+        this.space = 0
+        this.current = 0
         this.offset = 0
         this.busy = false
     }
 
     moveItems = () => {
-        this.layers.forEach(layer => layer.setPosition(this.height, this.scrollTop))
+        this.layers.forEach(layer => layer.setPosition(this.space, this.current))
         this.busy = false
     }
 
     scrollerRaf = () => requestAnimationFrame(this.moveItems)
 
     onScroll = event => {
+        const { horizontal } = this.props
         if (!this.busy) {
             this.busy = true
             this.scrollerRaf()
-            this.scrollTop = event.target.scrollTop
+            this.current = event.target[horizontal ? 'scrollLeft' : 'scrollTop']
         }
     }
 
     update = () => {
+        const { scrolling, horizontal } = this.props
         if (!this.refs.container) return
-        this.height = this.refs.container.clientHeight
-
-        if (this.props.scrolling) this.scrollTop = this.refs.container.scrollTop
-        else this.refs.container.scrollTop = this.scrollTop = this.offset * this.height
-
-        if (this.refs.content) this.refs.content.style.height = `${this.height * this.props.pages}px`
+        this.space = this.refs.container[horizontal ? 'clientWidth' : 'clientHeight']
+        if (scrolling) this.current = this.refs.container[horizontal ? 'scrollLeft' : 'scrollTop']
+        else this.refs.container[horizontal ? 'scrollLeft' : 'scrollTop'] = this.current = this.offset * this.space
+        if (this.refs.content)
+            this.refs.content.style[horizontal ? 'width' : 'height'] = `${this.space * this.props.pages}px`
         this.layers.forEach(layer => {
-            layer.setHeight(this.height, true)
-            layer.setPosition(this.height, this.scrollTop, true)
+            layer.setHeight(this.space, true)
+            layer.setPosition(this.space, this.current, true)
         })
     }
 
@@ -62,12 +65,13 @@ export default class extends React.Component {
     scrollStop = event => this.animatedScroll && this.animatedScroll.stopAnimation()
 
     scrollTo(offset) {
+        const { horizontal, effect } = this.props
         this.scrollStop()
         this.offset = offset
         const target = this.refs.container
-        this.animatedScroll = new Animated.Value(target.scrollTop)
-        this.animatedScroll.addListener(({ value }) => (target.scrollTop = value))
-        this.props.effect(this.animatedScroll, offset * this.height).start()
+        this.animatedScroll = new Animated.Value(target[horizontal ? 'scrollLeft' : 'scrollTop'])
+        this.animatedScroll.addListener(({ value }) => (target[horizontal ? 'scrollLeft' : 'scrollTop'] = value))
+        effect(this.animatedScroll, offset * this.space).start()
     }
 
     getChildContext() {
@@ -89,23 +93,25 @@ export default class extends React.Component {
     }
 
     render() {
-        const { style, innerStyle, pages, className, scrolling, children } = this.props
+        const { style, innerStyle, pages, className, scrolling, children, horizontal } = this.props
+        const overflow = scrolling ? 'scroll' : 'hidden'
         return (
             <div
                 ref="container"
                 onScroll={this.onScroll}
-                onWheel={scrolling && this.scrollStop}
-                onTouchStart={scrolling && this.scrollStop}
+                onWheel={scrolling ? this.scrollStop : null}
+                onTouchStart={scrolling ? this.scrollStop : null}
                 style={{
                     position: 'absolute',
                     width: '100%',
                     height: '100%',
-                    overflow: scrolling ? 'scroll' : 'hidden',
-                    overflowX: 'hidden',
+                    overflow,
+                    overflowY: horizontal ? 'hidden' : overflow,
+                    overflowX: horizontal ? overflow : 'hidden',
                     WebkitOverflowScrolling: 'touch',
-                    WebkitTransform: 'translate(0, 0)',
-                    MsTransform: 'translate(0, 0)',
-                    transform: 'translate3d(0, 0, 0)',
+                    WebkitTransform: 'translate(0,0)',
+                    MsTransform: 'translate(0,0)',
+                    transform: 'translate3d(0,0,0)',
                     ...style,
                 }}
                 className={className}>
@@ -114,12 +120,12 @@ export default class extends React.Component {
                         ref="content"
                         style={{
                             position: 'absolute',
-                            width: '100%',
+                            [horizontal ? 'height' : 'width']: '100%',
                             WebkitTransform: 'translate(0,0)',
                             MsTransform: 'translate(0,0)',
-                            transform: 'translate3d(0, 0, 0)',
+                            transform: 'translate3d(0,0,0)',
                             overflow: 'hidden',
-                            height: this.height * pages,
+                            [horizontal ? 'width' : 'height']: this.space * pages,
                             ...innerStyle,
                         }}>
                         {children}
@@ -145,12 +151,11 @@ export default class extends React.Component {
         constructor(props, context) {
             super(props, context)
             const parallax = context.parallax
-            const targetScroll = Math.floor(props.offset) * parallax.height
-            const offset = parallax.height * props.offset + targetScroll * props.speed
-            const toValue = parseFloat(-(parallax.scrollTop * props.speed) + offset)
+            const targetScroll = Math.floor(props.offset) * parallax.space
+            const offset = parallax.space * props.offset + targetScroll * props.speed
+            const toValue = parseFloat(-(parallax.current * props.speed) + offset)
             this.animatedTranslate = new Animated.Value(toValue)
-            const height = parallax.height * props.factor
-            this.animatedHeight = new Animated.Value(height)
+            this.animatedSpace = new Animated.Value(parallax.space * props.factor)
         }
 
         componentDidMount() {
@@ -179,17 +184,18 @@ export default class extends React.Component {
 
         setHeight(height, immediate = false) {
             const toValue = parseFloat(height * this.props.factor)
-            if (!immediate) this.context.parallax.props.effect(this.animatedHeight, toValue).start()
-            else this.animatedHeight.setValue(toValue)
+            if (!immediate) this.context.parallax.props.effect(this.animatedSpace, toValue).start()
+            else this.animatedSpace.setValue(toValue)
         }
 
         render() {
             const { style, children, offset, speed, factor, className, ...props } = this.props
+            const horizontal = this.context.parallax.props.horizontal
             const translate3d = this.animatedTranslate.interpolate({
                 inputRange: [0, 1],
-                outputRange: ['0,0px,0', '0,1px,0'],
+                outputRange: horizontal ? ['0px,0,0', '1px,0,0'] : ['0,0px,0', '0,1px,0'],
             })
-            
+
             return (
                 <Animated.div
                     {...props}
@@ -200,8 +206,8 @@ export default class extends React.Component {
                         backgroundSize: 'auto',
                         backgroundRepeat: 'no-repeat',
                         willChange: 'transform',
-                        width: '100%',
-                        height: this.animatedHeight,
+                        [horizontal ? 'height' : 'width']: '100%',
+                        [horizontal ? 'width' : 'height']: this.animatedSpace,
                         WebkitTransform: [{ translate3d }],
                         MsTransform: [{ translate3d }],
                         transform: [{ translate3d }],
