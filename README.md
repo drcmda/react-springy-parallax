@@ -1,7 +1,9 @@
-<b> *** This project has been merged into react-spring:<b> https://github.com/drcmda/react-spring
+<b> This project has been merged into react-spring:<b> https://github.com/drcmda/react-spring
     
-<b> *** Changes and bugfixes will go there instead. </b>
+<b> Changes and bugfixes will go there instead. </b>
 
+
+--
 
 A springy, composable parallax-scroller for React.
 
